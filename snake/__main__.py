@@ -1,7 +1,8 @@
 import pygame 
 import sys
-from snake.common import Size
+from snake.common import Size, N_ROWS, N_COLS
 from snake.abc import Builder
+from snake._world import WorldBuilder
 import typing
 
 
@@ -11,6 +12,11 @@ class Game:
     def __init__(self) -> None:
         self._run = True
         self._screen = None
+        self._world = (
+            WorldBuilder()
+            .set_grid(N_ROWS, N_COLS)
+            .get_result()
+        )
 
     def add(self, attribute: str, value: typing.Any) -> None:
         self.__dict__[attribute] = value
@@ -22,7 +28,10 @@ class Game:
                 if event.type == pygame.QUIT:
                     sys.exit()
 
+            self._world.update(events)
+
             self._screen.fill("black")
+            self._world.draw(self._screen)
             pygame.display.flip()
 
 class GameBuilder(Builder):
