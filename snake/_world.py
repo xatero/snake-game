@@ -11,6 +11,7 @@ class World:
     def __init__(self) -> None:
         self._snake = SnakeBuilder().set_antispeed(0.1).get_result()
         self._grid = None
+        self.alive = True
         self.score = 0
         self.FONT = pygame.font.Font(None, 32)
         self.gen_food()
@@ -43,7 +44,7 @@ class World:
         self.update_grid()
 
         if not self._snake.alive:
-            raise SystemExit
+            self.alive = False
 
     def draw_font(self, screen: pygame.Surface):
         surf = self.FONT.render(f"score: {self.score}", True, "black")

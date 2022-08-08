@@ -22,8 +22,6 @@ class Snake:
         self.head = BodyPart(pygame.Vector2((3, 4)))
         self.body: list[BodyPart] = [
             self.head,
-            BodyPart(pygame.Vector2((2, 4))),
-            BodyPart(pygame.Vector2((1, 4))),
         ]
         self.antispeed = None 
         self._last_time = time.time()

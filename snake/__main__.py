@@ -28,6 +28,9 @@ class Game:
 
             self._world.update(events)
 
+            if not self._world.alive:
+                self._world = WorldBuilder().set_grid(N_ROWS, N_COLS).get_result()
+
             self._screen.fill("#496A81")
             self._world.draw(self._screen)
             pygame.display.flip()
