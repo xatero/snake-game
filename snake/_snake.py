@@ -1,4 +1,5 @@
 import pygame
+import time
 
 from snake.abc import Builder
 from snake.common import (N_COLS, N_ROWS, TILE_SIZE, GridStructure,
@@ -24,6 +25,10 @@ class Snake:
             BodyPart(pygame.Vector2((2, 4))),
             BodyPart(pygame.Vector2((1, 4))),
         ]
+        self.antispeed = None 
+        self._last_time = time.time()
+        self._last_snake_direction = SnakeDirection.RIGHT
+        
 
     def move_snake(self, direction: SnakeDirection):
         # Move the head
@@ -38,13 +43,17 @@ class Snake:
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
-                    self.move_snake(SnakeDirection.RIGHT)
+                    self._last_snake_direction = SnakeDirection.RIGHT
                 elif event.key == pygame.K_LEFT:
-                    self.move_snake(SnakeDirection.LEFT)
+                    self._last_snake_direction = SnakeDirection.LEFT
                 elif event.key == pygame.K_UP:
-                    self.move_snake(SnakeDirection.UP)
+                    self._last_snake_direction = SnakeDirection.UP
                 elif event.key == pygame.K_DOWN:
-                    self.move_snake(SnakeDirection.DOWN)
+                    self._last_snake_direction = SnakeDirection.DOWN
+        
+        if (time.time() - self._last_time) > self.antispeed:
+            self.move_snake(self._last_snake_direction)
+            self._last_time = time.time()
 
     def process_input(self, grid: GridStructure) -> None:
         if self.head.pos.x == len(grid):
@@ -55,7 +64,6 @@ class Snake:
 
         elif self.head.pos.x < 0:
             self.head.pos.x = N_ROWS - 1
-            print(self.head.pos.x)
 
         elif self.head.pos.y < 0:
             self.head.pos.y = N_COLS - 1
@@ -64,9 +72,18 @@ class Snake:
         self.handle_input(events)
         self.process_input(grid)
 
+
     def draw(self, screen: pygame.Surface) -> None:
         for part in self.body:
             screen.blit(part.surf, (part.pos.x * TILE_SIZE, part.pos.y * TILE_SIZE))
+
+
+    def grow(self) -> None:
+        # We take the position of the last body part in the body, 
+        # and get the position of the new body part by subtracting
+        # one from the x coordinate
+        pos = self.body[-1].pos - (1, 0)
+        self.body.append(BodyPart(pos))
 
 
 class SnakeBuilder(Builder):
@@ -75,6 +92,10 @@ class SnakeBuilder(Builder):
 
     def reset(self):
         self._snake = Snake()
+
+    def set_antispeed(self, antispeed: float):
+        self._snake.antispeed = antispeed
+        return self
 
     def get_result(self) -> Snake:
         return self._snake
