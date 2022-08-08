@@ -1,6 +1,8 @@
-import pygame 
+import pygame
+
 from snake.abc import Builder
-from snake.common import Pos, PgEventList, GridStructure, TILE_SIZE, N_ROWS, N_COLS
+from snake.common import (N_COLS, N_ROWS, TILE_SIZE, GridStructure,
+                          PgEventList, Pos)
 from snake.enum import SnakeDirection
 
 
@@ -9,9 +11,10 @@ class BodyPart:
         self.pos = pos
         self.surf = pygame.Surface((TILE_SIZE, TILE_SIZE))
         self.surf.fill("red")
-    
+
     def __repr__(self) -> str:
         return f"<BodyPart({self.pos = })>"
+
 
 class Snake:
     def __init__(self) -> None:
@@ -19,7 +22,7 @@ class Snake:
         self.body: list[BodyPart] = [
             self.head,
             BodyPart(pygame.Vector2((2, 4))),
-            BodyPart(pygame.Vector2((1, 4)))
+            BodyPart(pygame.Vector2((1, 4))),
         ]
 
     def move_snake(self, direction: SnakeDirection):
@@ -42,18 +45,18 @@ class Snake:
                     self.move_snake(SnakeDirection.UP)
                 elif event.key == pygame.K_DOWN:
                     self.move_snake(SnakeDirection.DOWN)
-    
+
     def process_input(self, grid: GridStructure) -> None:
         if self.head.pos.x == len(grid):
             self.head.pos.x = 0
 
         elif self.head.pos.y == len(grid[int(self.head.pos.x)]):
             self.head.pos.y = 0
-        
+
         elif self.head.pos.x < 0:
             self.head.pos.x = N_ROWS - 1
             print(self.head.pos.x)
-        
+
         elif self.head.pos.y < 0:
             self.head.pos.y = N_COLS - 1
 
@@ -63,10 +66,8 @@ class Snake:
 
     def draw(self, screen: pygame.Surface) -> None:
         for part in self.body:
-            screen.blit(part.surf, (
-                part.pos.x * TILE_SIZE,
-                part.pos.y * TILE_SIZE
-            ))
+            screen.blit(part.surf, (part.pos.x * TILE_SIZE, part.pos.y * TILE_SIZE))
+
 
 class SnakeBuilder(Builder):
     def __init__(self) -> None:
@@ -77,6 +78,3 @@ class SnakeBuilder(Builder):
 
     def get_result(self) -> Snake:
         return self._snake
-
-
-

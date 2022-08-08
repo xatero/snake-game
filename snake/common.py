@@ -1,6 +1,6 @@
-import typing 
-import pygame 
+import typing
 
+import pygame
 
 """Constants"""
 TILE_SIZE = 25

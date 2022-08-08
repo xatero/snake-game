@@ -1,22 +1,20 @@
-import pygame 
 import sys
-from snake.common import Size, N_ROWS, N_COLS
-from snake.abc import Builder
-from snake._world import WorldBuilder
 import typing
 
+import pygame
+
+from snake._world import WorldBuilder
+from snake.abc import Builder
+from snake.common import N_COLS, N_ROWS, Size
 
 pygame.init()
+
 
 class Game:
     def __init__(self) -> None:
         self._run = True
         self._screen = None
-        self._world = (
-            WorldBuilder()
-            .set_grid(N_ROWS, N_COLS)
-            .get_result()
-        )
+        self._world = WorldBuilder().set_grid(N_ROWS, N_COLS).get_result()
 
     def add(self, attribute: str, value: typing.Any) -> None:
         self.__dict__[attribute] = value
@@ -34,6 +32,7 @@ class Game:
             self._world.draw(self._screen)
             pygame.display.flip()
 
+
 class GameBuilder(Builder):
     """Builds the game"""
 
@@ -44,10 +43,7 @@ class GameBuilder(Builder):
         self._game = Game()
 
     def set_screen(self, size: Size, flags: int = 0) -> None:
-        self._game.add(
-            "_screen",
-            pygame.display.set_mode(size, flags)
-        )
+        self._game.add("_screen", pygame.display.set_mode(size, flags))
         return self
 
     def set_caption(self, title: str) -> None:
@@ -59,12 +55,9 @@ class GameBuilder(Builder):
 
 
 def main():
-    game = (GameBuilder()
-            .set_caption("Gameplay")
-            .set_screen((500, 500))
-            .get_result()
-            )
+    game = GameBuilder().set_caption("Gameplay").set_screen((500, 500)).get_result()
     game.loop()
+
 
 if __name__ == "__main__":
     main()
