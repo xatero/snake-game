@@ -28,7 +28,7 @@ class Game:
 
             self._world.update(events)
 
-            self._screen.fill("black")
+            self._screen.fill("#496A81")
             self._world.draw(self._screen)
             pygame.display.flip()
 

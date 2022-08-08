@@ -8,7 +8,7 @@ class Food:
     def __init__(self) -> None:
         self.pos = None
         self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
-        self.image.fill("green")
+        self.image.fill("#db1f48")
         self.rect = self.image.get_rect()
     
     def draw(self, screen: pygame.Surface):

@@ -11,7 +11,7 @@ class BodyPart:
     def __init__(self, pos: Pos) -> None:
         self.pos = pos
         self.surf = pygame.Surface((TILE_SIZE, TILE_SIZE))
-        self.surf.fill("red")
+        self.surf.fill("#FFC482")
 
     def __repr__(self) -> str:
         return f"<BodyPart({self.pos = })>"
@@ -28,6 +28,7 @@ class Snake:
         self.antispeed = None 
         self._last_time = time.time()
         self._last_snake_direction = SnakeDirection.RIGHT
+        self.alive = True
         
 
     def move_snake(self, direction: SnakeDirection):
@@ -68,9 +69,15 @@ class Snake:
         elif self.head.pos.y < 0:
             self.head.pos.y = N_COLS - 1
 
+    def handle_self_collision(self, grid: GridStructure) -> None:
+        row, column = int(self.head.pos.x), int(self.head.pos.y)
+        if grid[row][column] == 2:
+            self.alive = False
+
     def update(self, events: PgEventList, grid: GridStructure) -> None:
         self.handle_input(events)
         self.process_input(grid)
+        self.handle_self_collision(grid)
 
 
     def draw(self, screen: pygame.Surface) -> None:
